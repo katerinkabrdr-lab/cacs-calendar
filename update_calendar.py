@@ -61,7 +61,10 @@ def render(rows):
                   'DTEND:' + (start + timedelta(minutes=90)).astimezone(timezone.utc).strftime('%Y%m%dT%H%M%SZ'),
                   'SUMMARY:' + escape(f"{item['name']} — {item['type']}"),
                   'LOCATION:' + escape(item.get('place', '')),
-                  'DESCRIPTION:' + escape(description), 'URL:' + SOURCE, 'END:VEVENT']
+                  'DESCRIPTION:' + escape(description), 'URL:' + SOURCE,
+                  'BEGIN:VALARM', 'ACTION:DISPLAY', 'TRIGGER:-PT15M',
+                  'DESCRIPTION:' + escape(f"Через 15 минут: {item['name']}"),
+                  'END:VALARM', 'END:VEVENT']
     lines.append('END:VCALENDAR')
     return '\r\n'.join(fold(line) for line in lines) + '\r\n'
 
