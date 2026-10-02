@@ -55,9 +55,10 @@ def render(rows):
         counts[base] += 1
         uid = hashlib.sha256(f'{base}:{counts[base]}'.encode()).hexdigest()[:32] + '@cacs-personal'
         teachers = '; '.join(' '.join(t.get(k, '') for k in ('last_name', 'name', 'patronymic')).strip() for t in item.get('teacher', []))
-        description = f"{item['type']}\nПреподаватели: {teachers or 'не указаны'}\nИсточник: {SOURCE}\nВремя окончания источник не сообщает."
+        description = f"{item['type']}\nПреподаватели: {teachers or 'не указаны'}\nИсточник: {SOURCE}\nДлительность пары: 90 минут (задана пользователем)."
         lines += ['BEGIN:VEVENT', f'UID:{uid}', f'DTSTAMP:{stamp}',
                   'DTSTART:' + start.astimezone(timezone.utc).strftime('%Y%m%dT%H%M%SZ'),
+                  'DTEND:' + (start + timedelta(minutes=90)).astimezone(timezone.utc).strftime('%Y%m%dT%H%M%SZ'),
                   'SUMMARY:' + escape(f"{item['name']} — {item['type']}"),
                   'LOCATION:' + escape(item.get('place', '')),
                   'DESCRIPTION:' + escape(description), 'URL:' + SOURCE, 'END:VEVENT']
